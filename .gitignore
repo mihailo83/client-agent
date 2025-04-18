@@ -1,0 +1,6 @@
+# игнорируем venv
+venv/
+__pycache__/
+*.pyc
+*.log
+temp.csv

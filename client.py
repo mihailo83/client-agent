@@ -1,5 +1,5 @@
 import socket
-import pickle  # Для сериализации списка
+import pickle  
 import os
 import subprocess
 import csv
@@ -28,7 +28,6 @@ def applicaion(conf_file):
         if (confLine.find('server_port=') >=0) and (confLine[0:12]=='server_port='):
             server_port=int(confLine[12:-1])
         if confLine.startswith('schedule='):
-            # schedule_time = confLine[9:]
             schedule_time = confLine[9:].strip()
     if client_hostname == 'None':
         ERR='CONFIG ERROR: "hostname" does not exist'
@@ -42,7 +41,7 @@ def applicaion(conf_file):
     
     connect_to_server(client_hostname,server_address,server_port)
 
-    # бесконечный цикл выполнения по расписанию
+    
     while schedule_time:
         try:
             now = datetime.now()
@@ -86,7 +85,6 @@ def connect_to_server(client_hostname,server_address,server_port):
 def collect_data(client_hostname):
     result = []
     result.append('client_hostname='+ client_hostname)
-    
     temp_file = 'temp.csv'
 
     # формируем список установленного по для х64
@@ -102,34 +100,15 @@ def collect_data(client_hostname):
         with open(temp_file, newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
 
-            for row in reader:
-                # пропускаем строчки
+            for row in reader: 
                 if row[0]=='#TYPE Selected.System.Management.Automation.PSCustomObject': continue
-                #['DisplayName', 'DisplayVersion', 'Publisher', 'Size', 'InstallDate']
                 if (row[0]=='DisplayName') and (row[1] == 'DisplayVersion'): continue
                 if row[0]=='': continue
-
-                # result = result +'DisplayName='+ str(row[0])
                 result.append('DisplayName='+ str(row[0]))
-
                 if row[1] =='': 
                     result.append ('DisplayVersion=None')
                 else: 
                     result.append ('DisplayVersion='+ str(row[1]))
-                # if row[2] =='' :
-                #     result.append ('Publisher=None')
-                # else: result.append ('Publisher='+ str(row[2]))
-                # if row[3] =='' :
-                #     result = result +'Size=None' 
-                # else: result = result +'Size='+ str(row[3])
-                # if row[4] =='' :
-                #     result = result +'InstallDate=None' 
-                # else: result = result +'InstallDate='+ str(row[4])
-
-                # result = result + str(row)
-
-
-                # print(result)
         os.remove(temp_file)    
 
     # формируем список установленного по для х32
@@ -140,39 +119,18 @@ def collect_data(client_hostname):
     res = p.communicate()[0]
     mes = res.decode('cp866')
     if os.path.exists(temp_file):
-        # result = result + 'client_data_x64='
-      
         with open(temp_file, newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
-
             for row in reader:
-                # пропускаем строчки
                 if row[0]=='#TYPE Selected.System.Management.Automation.PSCustomObject': continue
-                #['DisplayName', 'DisplayVersion', 'Publisher', 'Size', 'InstallDate']
                 if (row[0]=='DisplayName') and (row[1] == 'DisplayVersion'): continue
                 if row[0]=='': continue
-
-                # result = result +'DisplayName='+ str(row[0])
                 result.append('DisplayName='+ str(row[0]))
 
                 if row[1] =='': 
                     result.append ('DisplayVersion=None')
                 else: 
                     result.append ('DisplayVersion='+ str(row[1]))
-                # if row[2] =='' :
-                #     result.append ('Publisher=None')
-                # else: result.append ('Publisher='+ str(row[2]))
-                # if row[3] =='' :
-                #     result = result +'Size=None' 
-                # else: result = result +'Size='+ str(row[3])
-                # if row[4] =='' :
-                #     result = result +'InstallDate=None' 
-                # else: result = result +'InstallDate='+ str(row[4])
-
-                # result = result + str(row)
-
-
-                # print(result)
         os.remove(temp_file)    
     # формируем список установленного по для Windows Store
     if os.path.exists(temp_file):
@@ -182,39 +140,19 @@ def collect_data(client_hostname):
     res = p.communicate()[0]
     mes = res.decode('cp866')
     if os.path.exists(temp_file):
-        # result = result + 'client_data_x64='
-      
         with open(temp_file, newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
-
             for row in reader:
-                # пропускаем строчки
-                # шапка
                 if row[0]=='#TYPE Selected.Microsoft.Windows.Appx.PackageManager.Commands.AppxPackage': continue
-                #Name,"PackageFullName"
                 if (row[0]=='Name') and (row[1] == 'PackageFullName'): continue
-                # пустые 
                 if row[0]=='': continue
-
-                # result = result +'DisplayName='+ str(row[0])
                 result.append('DisplayName='+ str(row[0]))
-
                 if row[1] =='': 
                     result.append ('DisplayVersion=None')
                 else: 
-                    result.append ('DisplayVersion='+ str(row[1]))
-                
-
-                # print(result)
+                    result.append ('DisplayVersion='+ str(row[1]))              
         os.remove(temp_file)    
     return result
-
-
-# if __name__ == '__main__':
-#     conf_arr = applicaion('client.conf')
-#     if conf_arr: print (conf_arr)
-    
-
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
