@@ -1,41 +1,58 @@
-# Client Agent
+# Client Agent for Software Inventory
 
-**Client Agent** — это лёгкое клиентское Python-приложение, предназначенное для подключения к серверу и передачи системной информации. Используется в рамках клиент-серверной архитектуры, может быть расширен для мониторинга, удалённого управления или обмена данными.
+## 📦 Overview
 
-## ⚙️ Возможности
+This project is a lightweight client-side agent designed to collect software inventory data from Windows systems. It communicates with a centralized server, where the data is analyzed and stored in a MySQL database. A PHP-based web interface is used to view and assess the software installed across your organization’s machines.
 
-- Подключение к заданному серверу (IP + порт)
-- Загрузка конфигурации из `client.conf`
-- Сбор и отправка информации о системе
-- Простота настройки и запуска
-- Минимальные зависимости
+## 🛠 Features
 
-## 🛠️ Установка
+- Collects installed software data from:
+  - 64-bit registry
+  - 32-bit registry
+  - Microsoft Store apps
+- Sends serialized data to a remote server over TCP
+- Scheduled data collection support
+- Configuration via `client.conf`
 
-1. Клонируйте репозиторий:
-   ```bash
-   git clone https://github.com/mihail083/client-agent.git
-   cd client-agent
+## ⚙️ How it works
 
-2. Установите зависимости:
-pip install -r requirements.txt
+1. The agent reads configuration parameters such as:
+   - `hostname`
+   - `server_address`
+   - `server_port`
+   - `schedule`
+2. It collects installed software data using PowerShell commands.
+3. The data is serialized using `pickle` and sent to the server.
+4. The server stores the data in a MySQL database for further analysis and visualization.
 
-## Запуск
-python client.py
-⚠️ Перед запуском убедитесь, что в директории присутствует настроенный client.conf.
+## 📋 Configuration Example (`client.conf`)
 
-Пример конфигурации client.conf
+```
+hostname=Workstation-01
+server_address=192.168.1.10
+server_port=8888
+schedule=03:00
+```
 
-hostname=clientPCName
-server_address=127.0.0.1
-server_port=12345
-schedule=14:48
+## 🧪 Requirements
 
-## Структура проекта
+- Python 3.x
+- PowerShell (included with Windows)
+- Required Python packages:
+  ```
+  pip install -r requirements.txt
+  ```
 
-client-agent/
-client.py           # Основной клиентский скрипт
-client.conf         # Конфигурационный файл подключения
-requirements.txt    # Список зависимостей
-LICENSE             # Лицензия MIT
-.gitignore          # Игнорируемые файлы Git
+## 🚀 Running the agent
+
+```bash
+python client.py client.conf
+```
+
+## 🌍 License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+---
+
+© 2024 Mihailo — Feel free to fork, improve, and use for educational or open-source purposes.
