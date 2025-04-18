@@ -41,7 +41,6 @@ def applicaion(conf_file):
     
     connect_to_server(client_hostname,server_address,server_port)
 
-    
     while schedule_time:
         try:
             now = datetime.now()
