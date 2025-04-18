@@ -34,9 +34,8 @@ schedule=14:48
 ## Структура проекта
 
 client-agent/
-│
-├── client.py           # Основной клиентский скрипт
-├── client.conf         # Конфигурационный файл подключения
-├── requirements.txt    # Список зависимостей
-├── LICENSE             # Лицензия MIT
-└── .gitignore          # Игнорируемые файлы Git
+client.py           # Основной клиентский скрипт
+client.conf         # Конфигурационный файл подключения
+requirements.txt    # Список зависимостей
+LICENSE             # Лицензия MIT
+.gitignore          # Игнорируемые файлы Git
